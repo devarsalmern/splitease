@@ -1,0 +1,2 @@
+- [Orval schema naming](orval-naming.md) — generated Zod schemas use `*Body` suffix, not `*Input`; response shapes differ from spec names
+- [SplitEase API field names](splitease-api-fields.md) — non-obvious field names in generated API types that caused TS errors

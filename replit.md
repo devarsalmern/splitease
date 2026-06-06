@@ -1,6 +1,6 @@
-# [Project name]
+# SplitEase
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A full-stack Splitwise-style expense splitting mobile app. Split bills with friends across groups, track balances, and settle up easily.
 
 ## Run & Operate
 
@@ -9,28 +9,44 @@ _Replace the heading above with the project's name, and this line with one sente
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Required env: `DATABASE_URL` — Postgres connection string, `JWT_SECRET` — JWT signing secret
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
+- API: Express 5 (port 8080 in dev)
 - DB: PostgreSQL + Drizzle ORM
 - Validation: Zod (`zod/v4`), `drizzle-zod`
 - API codegen: Orval (from OpenAPI spec)
 - Build: esbuild (CJS bundle)
+- Mobile: Expo 54 + Expo Router + React Query
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `lib/api-spec/openapi.yaml` — single source of truth for all API contracts
+- `lib/db/src/schema/` — Drizzle schema files (users, groups, expenses, settlements, activity)
+- `artifacts/api-server/src/routes/` — Express route handlers
+- `artifacts/api-server/src/lib/` — auth (JWT/bcrypt), email (nodemailer), balances (debt simplification)
+- `artifacts/mobile/app/` — Expo Router screens
+- `artifacts/mobile/constants/colors.ts` — design tokens (purple/indigo brand)
+- `artifacts/mobile/context/AuthContext.tsx` — JWT token management
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Contract-first API design: OpenAPI spec → Orval codegen → typed React Query hooks + Zod schemas
+- JWT auth stored in AsyncStorage on mobile; passed as Bearer token via `setAuthTokenGetter`
+- Debt simplification algorithm in `lib/balances.ts` minimizes settlement transactions
+- All API routes validated server-side with Orval-generated Zod schemas (`*Body` suffix, not `*Input`)
+- Mobile API base URL set at module level via `setBaseUrl` (outside components) using `EXPO_PUBLIC_DOMAIN`
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Register/login with JWT auth
+- Create groups and invite members by email
+- Add expenses with equal, exact, or percentage splits
+- View simplified debts and settle up within groups
+- Activity feed per group
+- Dashboard with total balance overview
 
 ## User preferences
 
@@ -38,7 +54,12 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Orval-generated Zod schemas use `*Body` suffix (e.g. `RegisterBody`, not `RegisterInput`)
+- After changing `lib/*` packages, always run `pnpm run typecheck:libs` before leaf artifact checks
+- Mobile Expo dev server accessed via `$REPLIT_EXPO_DEV_DOMAIN`, not through `localhost:80`
+- `GetGroupBalancesResponse` has `simplifiedDebts` (not `balances`) and `memberBalances`
+- `CreateSettlementBody` uses `paidTo` (not `toUserId`) for the recipient field
+- `GetDashboardResponse` uses `totalOwe` (you owe others) and `totalOwed` (others owe you)
 
 ## Pointers
 

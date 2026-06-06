@@ -1,0 +1,193 @@
+Build a full-stack expense splitting web application similar to Splitwise. Use the following tech stack and specifications:
+
+---
+
+## TECH STACK
+
+- **Frontend**: React (Vite) + Tailwind CSS
+- **Backend**: Node.js + Express.js
+- **Database**: PostgreSQL (via Supabase or pg library) OR MongoDB (via Mongoose) — choose whichever Replit supports best
+- **Authentication**: JWT (JSON Web Tokens) + bcrypt for password hashing
+- **Email**: Nodemailer with Gmail SMTP or Resend API for transactional emails
+- **File Uploads**: Multer (for expense receipts)
+
+---
+
+## CORE FEATURES TO BUILD
+
+### 1. Authentication System
+- User registration with: name, email, password, profile picture (optional)
+- Email verification on signup (send verification link via email)
+- Login with JWT token (stored in httpOnly cookie or localStorage)
+- Forgot password / reset password via email link
+- Protected routes (middleware to check JWT on all private routes)
+
+### 2. User Profile
+- View and edit profile (name, avatar, currency preference)
+- Change password
+- Delete account
+
+### 3. Groups
+- Create a group with a name, description, and optional group image
+- Invite users to a group via email (send invitation email with accept link)
+- If invited user doesn't have an account, they get a signup link
+- View all your groups (as member or admin)
+- Leave a group
+- Admin can delete the group
+- Admin can remove members
+
+### 4. Expense Management (Core)
+- Add an expense inside a group with:
+  - Title / description
+  - Amount
+  - Currency
+  - Date
+  - Category (food, transport, accommodation, entertainment, utilities, other)
+  - Paid by (select which group member paid)
+  - Split type:
+    - Equal split (divide equally among selected members)
+    - Exact amounts (specify how much each person owes)
+    - Percentage split (specify % for each person)
+  - Optional: attach receipt image
+- Edit an expense (only creator or group admin)
+- Delete an expense (only creator or group admin)
+- View expense detail page
+
+### 5. Balance Calculation
+- For each group, show the net balance for each member (who owes whom and how much)
+- Show simplified debts (minimize number of transactions to settle up)
+- Overall balance across all groups for the logged-in user
+
+### 6. Settlements
+- Record a payment/settlement between two users
+- Mark a settlement as paid
+- View settlement history
+
+### 7. Email Notifications (Critical Feature)
+Send automatic email notifications for:
+- ✅ Welcome email on registration
+- ✅ Email verification
+- ✅ Group invitation email (with accept link)
+- ✅ When a new expense is added to a group (notify all members)
+- ✅ When an expense is edited (notify all members with what changed)
+- ✅ When an expense is deleted (notify all members)
+- ✅ When someone settles up / records a payment
+- ✅ Password reset email
+- ✅ Weekly summary email (optional/bonus)
+
+Each email should be HTML formatted with the app branding, clear info about the action, and a link to view details in the app.
+
+### 8. Activity Feed
+- Per-group activity log showing all actions (expense added, edited, deleted, settlements)
+- Timestamp and actor for each action
+
+### 9. Search & Filter
+- Search expenses by title/description
+- Filter by category, date range, paid by
+- Sort by date or amount
+
+---
+
+## DATABASE SCHEMA
+
+### Users Table
+- id, name, email, password_hash, avatar_url, currency, email_verified, verification_token, reset_token, reset_token_expiry, created_at
+
+### Groups Table
+- id, name, description, image_url, created_by, created_at
+
+### Group Members Table
+- id, group_id, user_id, role (admin/member), joined_at
+
+### Group Invitations Table
+- id, group_id, invited_email, invited_by, token, status (pending/accepted/declined), created_at
+
+### Expenses Table
+- id, group_id, title, description, amount, currency, category, paid_by, split_type, receipt_url, created_by, created_at, updated_at
+
+### Expense Splits Table
+- id, expense_id, user_id, amount_owed, percentage
+
+### Settlements Table
+- id, group_id, paid_by, paid_to, amount, note, created_at
+
+### Activity Log Table
+- id, group_id, user_id, action_type, description, metadata (JSON), created_at
+
+---
+
+## API ENDPOINTS
+
+### Auth
+- POST /api/auth/register
+- POST /api/auth/login
+- POST /api/auth/logout
+- GET /api/auth/verify-email/:token
+- POST /api/auth/forgot-password
+- POST /api/auth/reset-password/:token
+- GET /api/auth/me
+
+### Users
+- GET /api/users/profile
+- PUT /api/users/profile
+- DELETE /api/users/account
+
+### Groups
+- POST /api/groups (create)
+- GET /api/groups (list user's groups)
+- GET /api/groups/:id (single group with members)
+- PUT /api/groups/:id (edit)
+- DELETE /api/groups/:id
+- POST /api/groups/:id/invite (invite by email)
+- GET /api/groups/invite/accept/:token
+- DELETE /api/groups/:id/members/:userId (remove member)
+- GET /api/groups/:id/balances (calculated balances)
+- GET /api/groups/:id/activity
+
+### Expenses
+- POST /api/groups/:groupId/expenses
+- GET /api/groups/:groupId/expenses
+- GET /api/groups/:groupId/expenses/:id
+- PUT /api/groups/:groupId/expenses/:id
+- DELETE /api/groups/:groupId/expenses/:id
+
+### Settlements
+- POST /api/groups/:groupId/settlements
+- GET /api/groups/:groupId/settlements
+
+### Dashboard
+- GET /api/dashboard (overall balances across all groups)
+
+---
+
+## FRONTEND PAGES & COMPONENTS
+
+### Pages
+1. Landing page (marketing page for logged-out users)
+2. Register page
+3. Login page
+4. Email verification page
+5. Forgot/Reset password pages
+6. Dashboard (overview of all groups + total balances)
+7. Groups list page
+8. Single Group page (expenses + members + balances tabs)
+9. Add/Edit Expense modal or page
+10. Expense detail page
+11. Settlements page
+12. Profile settings page
+13. Activity feed page
+
+### Key UI Components
+- Navbar with user avatar dropdown
+- Group card
+- Expense card (shows who paid, split info, amount)
+- Balance summary card (green = owed to you, red = you owe)
+- Member list with avatars
+- Notification/toast system
+- Loading spinners and skeleton screens
+- Empty state illustrations
+- Responsive mobile-first design
+
+---
+
+## ENVIRONMENT VARIABLES NEEDED

@@ -1,5 +1,5 @@
 services:
-  - type: web
+     - type: web
     name: splitease-api
     runtime: node
     plan: free

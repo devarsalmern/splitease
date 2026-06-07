@@ -13,7 +13,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://splitease-api.onrender.com"
+        "EXPO_PUBLIC_API_URL": "https://splitease-api-x24v.onrender.com"
       }
     }
   }

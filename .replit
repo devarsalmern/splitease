@@ -23,6 +23,11 @@ timeoutMs = 20000
 
 [userenv.shared]
 JWT_SECRET = "ar7r*eEtVP4467WD8F$vFyWVtRMsguvQqqhHfgxOiEW4ks$b2mnSfpnG4#Va^tdB"
+SMTP_HOST = "smtp.resend.com"
+SMTP_PORT = "465"
+SMTP_SECURE = "true"
+SMTP_USER = "resend"
+EMAIL_FROM = "onboarding@resend.dev"
 
 [[ports]]
 localPort = 8080

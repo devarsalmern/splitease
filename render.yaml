@@ -30,7 +30,7 @@ services:
         value: onboarding@resend.dev
 
     # Exported from Render on 2026-06-07T10:38:52Z
-version: "1"
+
 databases:
   - name: splitease-db
     databaseName: splitease_db_3sjt

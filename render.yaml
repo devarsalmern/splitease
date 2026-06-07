@@ -36,8 +36,8 @@ databases:
     databaseName: splitease_db_3sjt
     user: splitease_db_3sjt_user
     plan: free
-  region: oregon
-  ipAllowList:
+    region: oregon
+    ipAllowList:
   - source: 0.0.0.0/0
     description: everywhere
   postgresMajorVersion: "18"

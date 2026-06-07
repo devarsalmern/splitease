@@ -1,10 +1,12 @@
+version: "1"
+
 services:
   - type: web
     name: splitease-api
     runtime: node
     plan: free
     buildCommand: npm install -g pnpm@9 && NODE_ENV=development pnpm install --no-frozen-lockfile && pnpm run typecheck:libs && pnpm --filter @workspace/api-server run build && pnpm --filter @workspace/db run push-force
-    startCommand: node --enable-source-maps artifacts/api-server/dist/index.mjs
+    startCommand: "node --enable-source-maps artifacts/api-server/dist/index.mjs"
     envVars:
       - key: NODE_ENV
         value: production
@@ -29,8 +31,6 @@ services:
       - key: EMAIL_FROM
         value: onboarding@resend.dev
 
-    # Exported from Render on 2026-06-07T10:38:52Z
-
 databases:
   - name: splitease-db
     databaseName: splitease_db_3sjt
@@ -38,7 +38,6 @@ databases:
     plan: free
     region: oregon
     ipAllowList:
-  - source: 0.0.0.0/0
-    description: everywhere
-  postgresMajorVersion: "18"
-
+      - source: 0.0.0.0/0
+        description: everywhere
+    postgresMajorVersion: "18"

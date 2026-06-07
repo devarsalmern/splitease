@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import { logger } from "./logger";
 
 const EMAIL_FROM = process.env.EMAIL_FROM ?? "noreply@splitease.app";
-const APP_URL = process.env.APP_URL ?? `https://${process.env.REPLIT_DEV_DOMAIN}`;
+const APP_URL = process.env.APP_URL ?? "http://localhost:8080";
 
 function createTransport() {
   if (process.env.SMTP_HOST) {

@@ -17,7 +17,14 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 
-setBaseUrl(`https://${process.env.EXPO_PUBLIC_DOMAIN}`);
+// EXPO_PUBLIC_API_URL = full URL (used in production APK builds via EAS secrets)
+// EXPO_PUBLIC_DOMAIN  = hostname only (injected by Replit dev workflow)
+const apiUrl =
+  process.env.EXPO_PUBLIC_API_URL ??
+  (process.env.EXPO_PUBLIC_DOMAIN
+    ? `https://${process.env.EXPO_PUBLIC_DOMAIN}`
+    : "http://localhost:8080");
+setBaseUrl(apiUrl);
 
 SplashScreen.preventAutoHideAsync();
 
